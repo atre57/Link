@@ -15,7 +15,6 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
-        /* --- Temel Değişkenler & CSS Reset --- */
         :root {
             --v-purple: #9333ea;
             --v-cyan: #00f2ff;
@@ -27,118 +26,69 @@
             --color-light: rgba(132, 139, 200, 0.18);
             --color-background: #f6f6f9;
             --color-success: #41f1b6;
-            
-            --card-border-radius: 2rem;
-            --border-radius-1: 0.4rem;
-            --border-radius-2: 0.8rem;
-            
-            --card-padding: 1.5rem;
-            --padding-1: 1.2rem;
-            
-            --box-shadow: 0 2rem 3rem var(--color-light);
+            --card-border-radius: 1.5rem;
+            --border-radius-1: 0.6rem;
+            --box-shadow: 0 1.5rem 2rem var(--color-light);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; list-style: none; border: 0; outline: none; transition: all 300ms ease; }
-        body { font-family: 'Poppins', sans-serif; font-size: 0.88rem; user-select: none; overflow-x: hidden; color: var(--color-dark); background-color: var(--color-background); }
-        h1 { font-weight: 800; font-size: 1.8rem; }
-        h3 { font-weight: 500; font-size: 0.87rem; }
-        h4 { font-weight: 400; font-size: 0.8rem; font-family: 'VALORANT', sans-serif; }
+        body { font-family: 'Poppins', sans-serif; font-size: 0.88rem; color: var(--color-dark); background-color: var(--color-background); overflow-x: hidden; }
         
-        .valorant { font-family: 'VALORANT', sans-serif; color: var(--v-purple); }
+        .valorant { font-family: 'VALORANT', sans-serif; letter-spacing: 2px; }
 
-        /* --- 1. GİRİŞ EKRANI (AUTH) --- */
-        #auth-wrapper {
-            width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
-            background-color: #c9d6ff; display: flex; align-items: center; justify-content: center;
-            z-index: 10000;
-        }
-        .auth-container {
-            background-color: #fff; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.35);
-            position: relative; overflow: hidden; width: 768px; max-width: 95%; min-height: 480px;
-        }
+        /* --- AUTH EKRANI --- */
+        #auth-wrapper { width: 100%; height: 100vh; position: fixed; top: 0; left: 0; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .auth-container { background: #fff; border-radius: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; width: 800px; max-width: 95%; min-height: 500px; }
         .form-container { position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out; }
         .sign-in { left: 0; width: 50%; z-index: 2; }
         .auth-container.active .sign-in { transform: translateX(100%); }
         .sign-up { left: 0; width: 50%; opacity: 0; z-index: 1; }
-        .auth-container.active .sign-up { transform: translateX(100%); opacity: 1; z-index: 5; animation: move 0.6s; }
-        @keyframes move { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
-        form { background-color: #fff; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 40px; height: 100%; text-align: center; }
-        .auth-input { background-color: #eee; border: none; margin: 8px 0; padding: 10px 15px; font-size: 13px; border-radius: 8px; width: 100%; }
-        .auth-btn { background-color: var(--v-purple); color: #fff; font-size: 12px; padding: 10px 45px; border-radius: 8px; font-weight: 600; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .auth-container.active .sign-up { transform: translateX(100%); opacity: 1; z-index: 5; }
+        form { padding: 0 50px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .auth-input { background: #f0f0f0; border-radius: 10px; padding: 12px 15px; margin: 8px 0; width: 100%; font-family: inherit; }
+        .auth-btn { background: var(--v-purple); color: #fff; padding: 12px 45px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3); }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4); }
+
         .toggle-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: all 0.6s ease-in-out; z-index: 1000; }
         .auth-container.active .toggle-container { transform: translateX(-100%); border-radius: 0 150px 100px 0; }
-        .toggle { background: linear-gradient(to right, #5c67ff, var(--v-purple)); color: #fff; position: relative; left: -100%; height: 100%; width: 200%; transition: all 0.6s ease-in-out; }
-        .auth-container.active .toggle { transform: translateX(50%); }
-        .toggle-panel { position: absolute; width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 30px; text-align: center; top: 0; transition: all 0.6s ease-in-out; }
-        .toggle-left { transform: translateX(-200%); }
-        .auth-container.active .toggle-left { transform: translateX(0); }
-        .toggle-right { right: 0; }
-        .auth-container.active .toggle-right { transform: translateX(200%); }
-
-        /* --- 2. DASHBOARD ANA YAPISI --- */
-        #dashboard-main { display: none; width: 96%; margin: 0 auto; gap: 1.8rem; min-height: 100vh; }
+        .toggle { background: linear-gradient(to bottom right, #6366f1, #9333ea); color: #fff; position: relative; left: -100%; height: 100%; width: 200%; }
         
-        /* Ekran Boyutu Modları (PC, Tablet, Telefon) */
-        #dashboard-main.pc { grid-template-columns: 14rem auto 26rem; }
-        #dashboard-main.tablet { grid-template-columns: 7rem auto; }
-        #dashboard-main.phone { grid-template-columns: 1fr; }
+        /* --- DASHBOARD --- */
+        #dashboard-main { display: none; width: 96%; margin: 0 auto; gap: 1.5rem; }
+        #dashboard-main.pc { grid-template-columns: 14rem auto 24rem; }
+        #dashboard-main.tablet { grid-template-columns: 5rem auto; }
+        #dashboard-main.phone { grid-template-columns: 1fr; margin-top: 4rem; }
 
-        /* --- 3. SIDEBAR --- */
-        aside { height: 100vh; position: sticky; top: 0; }
-        aside .top { display: flex; align-items: center; justify-content: space-between; margin-top: 1.4rem; padding: 0 1rem; }
-        aside .logo { display: flex; gap: 0.8rem; }
-        aside .sidebar { display: flex; flex-direction: column; height: 86vh; position: relative; top: 3rem; gap: 1rem; }
-        aside h3 { font-size: 0.87rem; }
-        aside .sidebar a { display: flex; color: var(--color-info-dark); margin-left: 2rem; gap: 1rem; align-items: center; height: 3.7rem; transition: all 300ms ease; position: relative; }
-        aside .sidebar a span { font-size: 1.6rem; }
-        aside .sidebar a:last-child { position: absolute; bottom: 2rem; width: 100%; }
-        aside .sidebar a.active { background: var(--color-light); color: var(--color-primary); margin-left: 0; }
-        aside .sidebar a.active:before { content: ""; width: 6px; height: 100%; background: var(--color-primary); }
-        aside .sidebar a:hover { color: var(--color-primary); }
+        aside { height: 100vh; display: flex; flex-direction: column; }
+        aside .sidebar { background: var(--color-white); border-radius: 1.5rem; margin-top: 1.5rem; box-shadow: var(--box-shadow); overflow: hidden; }
+        aside .sidebar a { display: flex; align-items: center; color: var(--color-info-dark); height: 4rem; gap: 1rem; padding-left: 1.5rem; cursor: pointer; }
+        aside .sidebar a.active { background: var(--color-light); color: var(--color-primary); border-left: 5px solid var(--color-primary); padding-left: calc(1.5rem - 5px); }
+        aside .sidebar a:hover { background: var(--color-light); padding-left: 2rem; }
 
-        /* Tablet Modunda Sidebar */
-        #dashboard-main.tablet aside h3 { display: none; }
-        #dashboard-main.tablet aside .top { justify-content: center; }
-        #dashboard-main.tablet aside .sidebar a { justify-content: center; margin-left: 0; }
+        main { padding-top: 1.5rem; }
+        .insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .insights > div { background: var(--color-white); padding: 1.5rem; border-radius: var(--card-border-radius); box-shadow: var(--box-shadow); text-align: center; transition: 0.3s; }
+        .insights > div:hover { transform: translateY(-5px); box-shadow: none; border: 1px solid var(--v-purple); }
+        .v-icon { font-size: 2.5rem; color: var(--v-purple); margin-bottom: 0.5rem; }
 
-        /* --- 4. ANA İÇERİK (MAIN) --- */
-        main { margin-top: 1.4rem; }
-        main h1 { margin-bottom: 2rem; }
-        main .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
-        main .insights > div { background: var(--color-white); padding: var(--card-padding); border-radius: var(--card-border-radius); box-shadow: var(--box-shadow); }
-        main .insights > div:hover { box-shadow: none; cursor: pointer; }
-        main .insights h3 { margin-top: 0.8rem; font-size: 1rem; font-family: 'VALORANT', sans-serif; }
-        main .insights span.v-icon { background: var(--color-primary); color: white; padding: 0.5rem; border-radius: 50%; font-size: 2rem; }
+        .config-panel { background: var(--color-white); padding: 1.5rem; border-radius: var(--card-border-radius); box-shadow: var(--box-shadow); }
+        .key-input { display: flex; gap: 0.5rem; margin: 0.5rem 0 1.5rem; }
+        .key-input input { flex: 1; padding: 0.8rem; background: var(--color-background); border-radius: var(--border-radius-1); border: 1px solid #ddd; }
 
-        /* Yapılandırma Paneli (Yeni) */
-        .config-panel { margin-top: 2rem; background: var(--color-white); padding: var(--card-padding); border-radius: var(--card-border-radius); box-shadow: var(--box-shadow); }
-        .config-panel h2 { margin-bottom: 1rem; }
-        .key-input { display: flex; gap: 10px; margin-bottom: 1rem; }
-        .key-input input { background: var(--color-background); border: 1px solid var(--color-light); padding: 0.8rem; border-radius: var(--border-radius-1); flex: 1; }
-        .config-btn { background: var(--color-success); color: var(--color-dark); padding: 0.8rem 1.5rem; border-radius: var(--border-radius-1); cursor: pointer; font-weight: 600; }
-
-        /* --- 5. SAĞ PANEL (AI ASSISTANT) --- */
-        .right { margin-top: 1.4rem; padding-left: 1rem; }
-        .ai-assistant { background: var(--color-white); padding: var(--card-padding); border-radius: var(--card-border-radius); box-shadow: var(--box-shadow); height: 550px; display: flex; flex-direction: column; gap: 1rem; }
-        .ai-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.8rem; border-bottom: 1px solid var(--color-light); }
-        .ai-header h3 { font-family: 'VALORANT', sans-serif; font-size: 1.1rem; }
-        .model-select { background: var(--color-background); border: 1px solid var(--color-light); padding: 5px 10px; border-radius: var(--border-radius-1); font-size: 0.7rem; }
-        #ai-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
+        .right { padding-top: 1.5rem; }
+        .ai-assistant { background: var(--color-white); border-radius: var(--card-border-radius); box-shadow: var(--box-shadow); height: calc(100vh - 3rem); display: flex; flex-direction: column; position: sticky; top: 1.5rem; }
+        .ai-header { padding: 1.5rem; border-bottom: 1px solid var(--color-light); display: flex; justify-content: space-between; align-items: center; }
+        #ai-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; scroll-behavior: smooth; }
         
-        .msg-bubble { padding: 10px 15px; border-radius: 12px; max-width: 90%; }
-        .msg-user { align-self: flex-end; background: var(--v-purple); color: white; border-bottom-right-radius: 2px; }
-        .msg-ai { align-self: flex-start; background: var(--color-light); color: var(--color-dark); border-bottom-left-radius: 2px; }
-        .msg-ai pre { background: #282c34; color: #abb2bf; padding: 10px; border-radius: 8px; overflow-x: auto; margin-top: 5px; }
-
-        .chat-input-area { display: flex; gap: 0.5rem; border-top: 1px solid var(--color-light); padding-top: 1rem; }
-        .chat-input-area input { width: 100%; background: var(--color-background); padding: 0.8rem; border-radius: 1rem; }
-        .chat-input-area button { background: none; color: var(--v-purple); cursor: pointer; font-size: 2rem; }
-
-        /* Telefon Modunda Sağ Panel */
-        #dashboard-main.phone .right { grid-row: 2; margin-top: 0; padding-left: 0; }
+        .msg-bubble { padding: 0.8rem 1.2rem; border-radius: 1rem; max-width: 85%; font-size: 0.9rem; line-height: 1.4; }
+        .msg-user { align-self: flex-end; background: var(--v-purple); color: white; border-bottom-right-radius: 0; }
+        .msg-ai { align-self: flex-start; background: #f0f2f5; color: var(--color-dark); border-bottom-left-radius: 0; }
         
-        /* --- 6. EKSTRA GÖRSEL ÖĞELER --- */
-        #cursor-glow { position: fixed; width: 300px; height: 300px; background: radial-gradient(circle, rgba(115, 128, 236, 0.1) 0%, transparent 70%); pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); }
+        .chat-input-area { padding: 1.5rem; border-top: 1px solid var(--color-light); display: flex; gap: 0.8rem; }
+        .chat-input-area input { flex: 1; padding: 0.8rem 1.2rem; background: var(--color-background); border-radius: 2rem; }
+        .chat-input-area button { color: var(--v-purple); background: none; font-size: 1.8rem; cursor: pointer; }
+
+        #cursor-glow { position: fixed; width: 400px; height: 400px; background: radial-gradient(circle, rgba(147, 51, 234, 0.08) 0%, transparent 70%); pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
     </style>
 </head>
 <body>
@@ -148,31 +98,31 @@
     <div id="auth-wrapper">
         <div class="auth-container" id="auth-container">
             <div class="form-container sign-up">
-                <form>
-                    <h1>Hesap Oluştur</h1>
-                    <input type="text" id="rName" class="auth-input" placeholder="Kullanıcı Adı">
+                <form id="registerForm">
+                    <h1 class="valorant">KAYIT OL</h1>
+                    <input type="text" id="rName" class="auth-input" placeholder="Kullanıcı Adı" autocomplete="off">
                     <input type="password" id="rPass" class="auth-input" placeholder="Şifre">
-                    <button type="button" class="auth-btn" onclick="handleAuth('register')">KAYDOL</button>
+                    <button type="button" class="auth-btn" onclick="handleAuth('register')">HESAP OLUŞTUR</button>
                 </form>
             </div>
             <div class="form-container sign-in">
-                <form>
-                    <h1 class="valorant" style="font-size: 2rem; margin-bottom: 20px;">NEXUS HUB</h1>
-                    <input type="text" id="lName" class="auth-input" placeholder="Kullanıcı Adı">
+                <form id="loginForm">
+                    <h1 class="valorant" style="color: var(--v-purple); font-size: 2.5rem; margin-bottom: 1rem;">NEXUS</h1>
+                    <input type="text" id="lName" class="auth-input" placeholder="Kullanıcı Adı" autocomplete="off">
                     <input type="password" id="lPass" class="auth-input" placeholder="Şifre">
                     <button type="button" class="auth-btn" onclick="handleAuth('login')">GİRİŞ YAP</button>
-                    <button type="button" class="auth-btn" onclick="loginSuccess('MİSAFİR', false)" style="background: #333; margin-top: 5px;">MİSAFİR GİRİŞİ</button>
+                    <button type="button" class="auth-btn" onclick="loginSuccess('MISAFIR', false)" style="background: #222;">MİSAFİR GİRİŞİ</button>
                 </form>
             </div>
             <div class="toggle-container">
                 <div class="toggle">
-                    <div class="toggle-panel toggle-left">
-                        <h1>Zaten Üye misin?</h1>
-                        <button class="auth-btn" id="toLoginBtn">GİRİŞ YAP</button>
+                    <div class="toggle-panel" style="position:absolute; left:0; width:50%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                        <h2>Tekrar Hoşgeldin!</h2>
+                        <button class="auth-btn" style="background:transparent; border: 2px solid #white;" onclick="document.getElementById('auth-container').classList.remove('active')">GİRİŞ YAP</button>
                     </div>
-                    <div class="toggle-panel toggle-right">
-                        <h1>Selam Komutan!</h1>
-                        <button class="auth-btn" id="toRegisterBtn">Hemen KAYDOL</button>
+                    <div class="toggle-panel" style="position:absolute; right:0; width:50%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                        <h2>Yeni misin?</h2>
+                        <button class="auth-btn" style="background:transparent; border: 2px solid white;" onclick="document.getElementById('auth-container').classList.add('active')">KAYDOL</button>
                     </div>
                 </div>
             </div>
@@ -181,83 +131,76 @@
 
     <div id="dashboard-main" class="pc">
         <aside>
-            <div class="top">
-                <div class="logo">
-                    <h2 class="valorant">HUB</h2>
-                </div>
+            <div style="padding: 1.5rem 0 0 1rem;">
+                <h2 class="valorant" style="color: var(--v-purple);">NEXUS HUB</h2>
             </div>
             <div class="sidebar">
-                <a class="active"><span class="material-icons-sharp">auto_awesome</span><h3>Asistan</h3></a>
-                <a><span class="material-icons-sharp">insights</span><h3>Analiz</h3></a>
-                <a><span class="material-icons-sharp">groups</span><h3>Üyeler</h3></a>
+                <a class="active"><span class="material-icons-sharp">auto_awesome</span><h3>AI Asistan</h3></a>
+                <a><span class="material-icons-sharp">insights</span><h3>Analizler</h3></a>
                 <a><span class="material-icons-sharp">settings</span><h3>Ayarlar</h3></a>
-                
-                <div style="border-top:1px solid var(--color-light); padding: 10px; display:flex; flex-direction:column; gap: 5px; position:absolute; bottom: 6rem; width:100%">
-                    <h4 style="font-size: 0.7rem; color: var(--color-info-dark); margin-bottom: 5px;">Cihaz Görünümü</h4>
-                    <button onclick="setScreenMode('phone')" style="background:none; display:flex; gap: 10px; color:var(--color-dark); cursor:pointer;"><span class="material-icons-sharp">stay_primary_portrait</span>Cep</button>
-                    <button onclick="setScreenMode('tablet')" style="background:none; display:flex; gap: 10px; color:var(--color-dark); cursor:pointer;"><span class="material-icons-sharp">tablet_android</span>Tablet</button>
-                    <button onclick="setScreenMode('pc')" style="background:none; display:flex; gap: 10px; color:var(--color-dark); cursor:pointer;"><span class="material-icons-sharp">desktop_windows</span>PC</button>
+                <a onclick="location.reload()" style="margin-top: 2rem; color: #ff7782;"><span class="material-icons-sharp">logout</span><h3>Güvenli Çıkış</h3></a>
+            </div>
+            
+            <div style="margin-top: auto; padding: 1rem; background: var(--color-white); border-radius: 1rem; margin-bottom: 1rem;">
+                <h4 class="valorant" style="font-size: 0.6rem; margin-bottom: 0.5rem;">GÖRÜNÜM</h4>
+                <div style="display:flex; justify-content: space-around;">
+                    <span class="material-icons-sharp" style="cursor:pointer" onclick="setScreenMode('phone')">smartphone</span>
+                    <span class="material-icons-sharp" style="cursor:pointer" onclick="setScreenMode('tablet')">tablet</span>
+                    <span class="material-icons-sharp" style="cursor:pointer" onclick="setScreenMode('pc')">computer</span>
                 </div>
-
-                <a onclick="location.reload()"><span class="material-icons-sharp">logout</span><h3>Çıkış</h3></a>
             </div>
         </aside>
 
         <main>
-            <h1>Yapay Zeka Paneli</h1>
-            
+            <h1 class="valorant" style="font-size: 1.4rem;">OPERASYON MERKEZİ</h1>
             <div class="insights">
-                <div onclick="alert('Model Seçimi Açılıyor...')">
-                    <span class="material-icons-sharp v-icon">language</span>
-                    <h3>MODEL SEÇ</h3>
-                    <h4>Dil & Mantık</h4>
+                <div>
+                    <span class="material-icons-sharp v-icon">psychology</span>
+                    <h3>ZEKA</h3>
+                    <p style="font-size: 0.7rem; color: var(--color-info-dark);">Model: Gemini 1.5 Pro</p>
                 </div>
-                <div onclick="alert('Görsel Mod Açılıyor...')">
-                    <span class="material-icons-sharp v-icon">auto_fix_high</span>
-                    <h3>GÖRSEL ÜRET</h3>
-                    <h4>DALL-E & Midjourney</h4>
+                <div>
+                    <span class="material-icons-sharp v-icon">code</span>
+                    <h3>GELİŞTİRİCİ</h3>
+                    <p style="font-size: 0.7rem; color: var(--color-info-dark);">Kod Analizi Aktif</p>
                 </div>
-                <div onclick="alert('Kod Modu Açılıyor...')">
-                    <span class="material-icons-sharp v-icon">terminal</span>
-                    <h3>KOD ASİSTANI</h3>
-                    <h4>Hata Ayıklama</h4>
+                <div>
+                    <span class="material-icons-sharp v-icon">verified_user</span>
+                    <h3>VIP DURUMU</h3>
+                    <p id="vip-status-text" style="font-size: 0.7rem; color: var(--color-success);">Aktif Değil</p>
                 </div>
             </div>
 
             <div class="config-panel">
-                <h2>Yapılandırma</h2>
-                <h4>Bu anahtarlar sadece senin cihazında tutulur, sunucularımıza gönderilmez.</h4>
-                <div style="margin-top: 1rem;">
-                    <label>Gemini API Key (Google AI Studio)</label>
-                    <div class="key-input">
-                        <input type="text" id="geminiKeyInp" placeholder="AIzaSy...">
-                        <button class="config-btn" onclick="saveApiKey('gemini')">KAYDET</button>
-                    </div>
-                    <label>Claude API Key (Anthropic Console)</label>
-                    <div class="key-input">
-                        <input type="text" id="claudeKeyInp" placeholder="sk-ant-...">
-                        <button class="config-btn" onclick="saveApiKey('claude')">KAYDET</button>
-                    </div>
+                <h2 class="valorant" style="font-size: 1rem; margin-bottom: 1rem;">API YAPILANDIRMASI</h2>
+                <label>Gemini API Anahtarı</label>
+                <div class="key-input">
+                    <input type="password" id="geminiKeyInp" placeholder="AIzaSy...">
+                    <button class="auth-btn" style="margin-top:0;" onclick="saveApiKey('gemini')">KAYDET</button>
                 </div>
+                <label>Claude API Anahtarı (Opsiyonel)</label>
+                <div class="key-input">
+                    <input type="password" id="claudeKeyInp" placeholder="sk-ant-...">
+                    <button class="auth-btn" style="margin-top:0;" onclick="saveApiKey('claude')">KAYDET</button>
+                </div>
+                <p style="font-size: 0.7rem; color: var(--color-info-dark);">* Anahtarlar yerel depolamada (LocalStorage) şifresiz tutulur. Güvenliğiniz için kendi cihazınızda kullanın.</p>
             </div>
         </main>
 
         <div class="right">
             <div class="ai-assistant">
                 <div class="ai-header">
-                    <h3>AI ASİSTAN</h3>
-                    <select id="aiModelSelector" class="model-select">
+                    <h3 class="valorant">NEXUS AI</h3>
+                    <select id="aiModelSelector" style="background: var(--color-background); padding: 5px; border-radius: 5px;">
                         <option value="gemini">Gemini Pro</option>
                         <option value="claude">Claude 3 (Simüle)</option>
                     </select>
                 </div>
-                
                 <div id="ai-messages">
-                    <div class="msg-bubble msg-ai">Selam Komutan, bugün hangi AI modelini kullanmak istersin?</div>
+                    <div class="msg-bubble msg-ai">Sistem çevrimiçi. Komutlarınızı bekliyorum.</div>
                 </div>
-                
                 <div class="chat-input-area">
-                    <input type="text" id="aiInput" placeholder="Yapay zekaya sor...">
+                    <input type="text" id="aiInput" placeholder="Bir mesaj yazın...">
                     <button onclick="askAI()"><span class="material-icons-sharp">send</span></button>
                 </div>
             </div>
@@ -265,127 +208,101 @@
     </div>
 
     <script>
-        // === 1. KONFİGÜRASYON VE VERİTABAANI ===
-        // !!! DİKKAT !!! Hassas API anahtarlarınızı bir config manager olarak saklayacağız.
-        // Başlangıç için koda anahtar gömmedim, kullanıcıdan alacağız.
-
-        // Firebase Ayarları (Eski veritabanın)
+        // Firebase & Başlangıç Ayarları
         const dbConfig = { apiKey: "AIzaSyBC_h0zpRSSGdzcbtGsq3Bh2WGKAgTrNKc", authDomain: "vanguardnexus-a2871.firebaseapp.com", databaseURL: "https://vanguardnexus-a2871-default-rtdb.firebaseio.com", projectId: "vanguardnexus-a2871" };
         firebase.initializeApp(dbConfig); const db = firebase.database();
 
-        // === 2. GİRİŞ VE ÜYELİK SİSTEMİ ===
-        const authContainer = document.getElementById('auth-container');
-        document.getElementById('toRegisterBtn').addEventListener('click', () => authContainer.classList.add("active"));
-        document.getElementById('toLoginBtn').addEventListener('click', () => authContainer.classList.remove("active"));
-
+        // Auth İşlemleri
         function handleAuth(type) {
             const u = document.getElementById(type === 'login' ? 'lName' : 'rName').value.trim();
             const p = document.getElementById(type === 'login' ? 'lPass' : 'rPass').value.trim();
             
-            if(!u || !p) return alert("Lütfen alanları doldur.");
+            if(!u || !p) return alert("Eksik bilgi!");
             
             if(type === 'login') {
                 if(u === "ADMIN" && p === "1200778") return loginSuccess(u, true);
                 db.ref('users/'+u).once('value').then(s => {
                     if(s.exists() && s.val().password === p) loginSuccess(u, s.val().isVip);
-                    else alert("Kullanıcı adı veya şifre hatalı.");
+                    else alert("Hatalı giriş!");
                 });
             } else {
-                db.ref('users/'+u).once('value').then(s => {
-                    if(s.exists()) return alert("Kullanıcı zaten var.");
-                    db.ref('users/'+u).set({password:p, isVip: false}).then(() => {
-                        alert("Kayıt başarılı! Giriş yapabilirsiniz.");
-                        authContainer.classList.remove("active");
-                    });
+                db.ref('users/'+u).set({password:p, isVip: false}).then(() => {
+                    alert("Kayıt başarılı!");
+                    document.getElementById('auth-container').classList.remove('active');
                 });
             }
         }
 
         function loginSuccess(user, isVip) {
             sessionStorage.setItem("user", user);
-            sessionStorage.setItem("vip", isVip);
             document.getElementById("auth-wrapper").style.display = "none";
             document.getElementById("dashboard-main").style.display = "grid";
-            
-            // Kayıtlı API anahtarlarını yükle
+            document.getElementById("vip-status-text").innerText = isVip ? "VIP ÜYE" : "STANDART";
+            if(isVip) document.getElementById("vip-status-text").style.color = "#ffbb55";
+
             document.getElementById('geminiKeyInp').value = localStorage.getItem('geminiKey') || '';
             document.getElementById('claudeKeyInp').value = localStorage.getItem('claudeKey') || '';
         }
 
-        // === 3. EKRAN MODLARI (RESPONSIVE PC, Tablet, Cep) ===
+        // Ekran Modu
         function setScreenMode(mode) {
-            const main = document.getElementById('dashboard-main');
-            main.className = mode; // pc, tablet, phone
+            document.getElementById('dashboard-main').className = mode;
         }
 
-        // === 4. API ANAHTARLARINI SAKLAMA (YEREL) ===
+        // API Key Kaydetme
         function saveApiKey(type) {
-            const inp = document.getElementById(type+'KeyInp');
-            const key = inp.value.trim();
-            if(key) {
-                localStorage.setItem(type+'Key', key);
-                alert(`${type.toUpperCase()} Anahtarı sadece senin cihazına kaydedildi.`);
-            } else {
-                localStorage.removeItem(type+'Key');
-                alert(`${type.toUpperCase()} Anahtarı silindi.`);
-            }
+            const val = document.getElementById(type+'KeyInp').value;
+            localStorage.setItem(type+'Key', val);
+            alert("Anahtar kaydedildi.");
         }
 
-        // === 5. AI ASİSTAN (GEMINI & CLAUDE) ===
+        // AI Chat Fonksiyonu
         async function askAI() {
             const input = document.getElementById('aiInput');
             const chat = document.getElementById('ai-messages');
-            const model = document.getElementById('aiModelSelector').value;
             const text = input.value.trim();
+            const model = document.getElementById('aiModelSelector').value;
+            
             if(!text) return;
-
-            // Kullanıcı mesajı
+            
             chat.innerHTML += `<div class="msg-bubble msg-user">${text}</div>`;
             input.value = "";
-            
-            // Yükleniyor durumu
-            const loadId = "l-" + Date.now();
-            chat.innerHTML += `<div id="${loadId}" class="msg-bubble msg-ai" style="font-style: italic;">${model.toUpperCase()} düşünüyor...</div>`;
             chat.scrollTop = chat.scrollHeight;
 
             const apiKey = localStorage.getItem(model+'Key');
             if(!apiKey) {
-                document.getElementById(loadId).innerText = `Hata: ${model.toUpperCase()} API anahtarı 'Ayarlar' kısmına eklenmemiş.`;
-                chat.scrollTop = chat.scrollHeight;
+                chat.innerHTML += `<div class="msg-bubble msg-ai" style="color:red">Hata: API anahtarı bulunamadı!</div>`;
                 return;
             }
 
-            try {
-                let aiResponseText = "";
-                
-                if(model === "gemini") {
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
-                    });
-                    const data = await res.json();
-                    aiResponseText = data.candidates[0].content.parts[0].text;
-                } else {
-                    // Claude simülasyonu
-                    aiResponseText = "Tarayıcı üzerinde güvenlik nedeniyle (CORS) Anthropic API'sine doğrudan bağlantı kuramıyorum. Şimdilik Gemini Pro modelini kullanabilirsin komutan.";
-                }
+            const loader = document.createElement('div');
+            loader.className = "msg-bubble msg-ai";
+            loader.innerText = "...";
+            chat.appendChild(loader);
 
-                // AI yanıtını marked.parse ile kod blokları düzgün görünecek şekilde kopyala
-                document.getElementById(loadId).remove();
-                chat.innerHTML += `<div class="msg-bubble msg-ai"><b>${model.toUpperCase()}:</b><br>${marked.parse(aiResponseText)}</div>`;
-                
-            } catch(e) { 
-                document.getElementById(loadId).innerText = "Hata! Bağlantı kurulamadı, API anahtarını kontrol et."; 
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
+                });
+                const data = await res.json();
+                const aiMsg = data.candidates[0].content.parts[0].text;
+                loader.innerHTML = `<b>${model.toUpperCase()}:</b><br>${marked.parse(aiMsg)}`;
+            } catch(e) {
+                loader.innerText = "Bağlantı hatası!";
             }
             chat.scrollTop = chat.scrollHeight;
         }
 
-        // Enter tuşu desteği
-        document.getElementById('aiInput').addEventListener('keypress', function(e) { if(e.key === 'Enter') askAI(); });
-
-        // === 6. EFEKTLER (CURSOR GLOW) ===
-        window.onmousemove = e => { const g = document.getElementById('cursor-glow'); g.style.left = e.clientX+'px'; g.style.top = e.clientY+'px'; };
+        // Görsel Efekt
+        window.onmousemove = e => { 
+            const g = document.getElementById('cursor-glow'); 
+            g.style.left = e.clientX+'px'; 
+            g.style.top = e.clientY+'px'; 
+        };
+        
+        document.getElementById('aiInput').addEventListener('keypress', e => { if(e.key === 'Enter') askAI(); });
     </script>
 </body>
 </html>
